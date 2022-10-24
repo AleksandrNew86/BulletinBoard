@@ -1,0 +1,50 @@
+{% extends 'Ads/default.html' %}
+{% block title %}
+Ad
+{% endblock title %}
+
+{% block content %}
+<h3>{{ ad.author }} опубликовал объявление:</h3>
+<h3>Название: <i>{{ ad.title_ad }}</i></h3>
+<br />
+{{ ad.content_ad|safe}}
+<p align="right"><i>Дата создания: {{ ad.date_creation | date:'d.m.Y' }}</i></p>
+{% if ad.author == request.user %}
+<button><a class="nav-link" href="{% url 'ad_edit' ad.pk%}">Редактировать новость</a></button>
+
+{% endif %}
+
+{% if not responses %}
+<h3>Нет откликов</h3>
+{% else %}
+<H3 style="text-align: center">Отклики на объявление:</h3>
+
+{% for response in responses %}
+<div {% if response.accepted %} style="background-color: lightblue; width: 25em; border: 2px solid #333;  margin: auto;"
+     {% else %}  style="width: 25em; border: 2px solid #333;  margin: auto;"{% endif %}>
+    <b>{{ response|safe }}</b>
+    <br />
+     <i>Дата создания: {{ response.date_creation }}</i>
+    {% if response.accepted %}
+<div>Cтатус: <i>принято</i></div>
+    {% else %}
+<div>Cтатус: <i>не принято</i></div>
+    {% endif %}
+
+</div>
+<br />
+{% endfor %}
+{% endif %}
+<br />
+<br />
+{% if request.user.is_authenticated %}
+        <form method="post" action="">
+        {% csrf_token %}
+            <label for="response">Напишите свой отклик:</label>
+            <input type="textarea" style="width: 20; height: 10em;" name="response">
+            <input type="hidden" name="ad_resp" id="ad_resp" value="{{ object.id }}" >
+            <input type="submit" name="add_ad" value="Отправить">
+       </form>
+{% endif %}
+<br />
+{% endblock content %}

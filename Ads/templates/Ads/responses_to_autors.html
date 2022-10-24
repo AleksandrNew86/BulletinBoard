@@ -1,0 +1,63 @@
+{% extends 'Ads/default.html' %}
+{% block title %}
+Responses for the authors ads
+{% endblock title %}
+
+{% block content %}
+<br />
+     <form action="" method="POST">
+         {% csrf_token %} <!-- Не забываем по csrf_token для POST-запросов -->
+             <select name="ads" id="ads">
+                 <option
+                 {% if not ads_filter %}
+                        selected
+                        {% endif %} >Все объявление</option>
+            {% for ad in author_ads %} <!-- Итерируясь по списку, выводим их название на языке пользователя и код -->
+                <option value="{{ ad }}"
+                {% if ads_filter == ad %}
+                        selected
+                        {% endif %}>
+                    {{ ad }}
+
+                </option>
+            {% endfor %}
+        </select>
+        <input type="submit" value='Найти' name="search">
+        </form>
+<hr />
+
+{% for response in responses %}
+
+<div {% if response.accepted %} style="background-color: lightblue; width: 25em; border: 2px solid #333;  margin: auto;"
+     {% else %}  style="width: 25em; border: 2px solid #333;  margin: auto;"{% endif %}>
+    <br />
+    <b>{{ response }}</b>
+    <br />
+     <i>Дата создания: {{ response.date_creation }}</i>
+    {% if response.accepted %}
+        <form method="post" action="">
+        {% csrf_token %}
+            <input type="hidden" name="response" value="{{ response.id }}" >
+            <input style="padding: 0; margin: 10px" type="submit" value="Удалить отклик" name="delete_response">
+        </form>
+    {% else %}
+        <form method="post" action="">
+        {% csrf_token %}
+            <input type="hidden" name="response" value="{{ response.id }}" >
+            <input style="padding: 0; margin: 10px" type="submit" value="Принять отклик" name="accept_response">
+        </form>
+        <form method="post" action="">
+        {% csrf_token %}
+            <input type="hidden" name="response" value="{{ response.id }}" >
+            <input style="padding: 0; margin: 10px" type="submit" value="Удалить отклик" name="delete_response">
+        </form>
+    {% endif %}
+    {% if not ads_filter %}
+    <i><b>Объявление:</b> {{ response.ad }}</i>
+    {% endif %}
+</div>
+<br />
+
+{% endfor %}
+{{ ads_filter }}
+{% endblock content %}

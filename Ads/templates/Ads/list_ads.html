@@ -1,0 +1,38 @@
+
+{% extends 'Ads/default.html' %}
+{% load custom_tags %}
+{% block title %}
+
+All ads
+{% endblock title %}
+
+{% block content %}
+<h3>На странице: {{ ads|length }} объявлений.</h3>
+<h1>Объявления:</h1>
+<hr />
+{% for i in ads %}
+    "Название": <b>"{{ i.title_ad }}"</b>
+    <br />
+    Дата создания: <i>{{ i.date_creation| date:'d m Y' }}</i>
+    <br />
+    Содержание: <i>{{ i.content_ad|safe}}</i>
+    <br />
+    <button><a class="nav-link1" style="color: black" href="{% url 'ad_details' i.pk %}">Прочитать/добавить отклики</a></button>
+    <hr />
+
+{% endfor %}
+{% if page_obj.has_previous %}
+    <a href="?{% url_replace page=1 %}">1</a>
+    {% if page_obj.previous_page_number != 1 %}
+        <a class="nav-link" href="?{% url_replace page=page_obj.previous_page_number %}">{{ page_obj.previous_page_number }}</a>
+    {% endif %}
+{% endif %}
+{{ page_obj.number }}
+{% if page_obj.has_next %}
+    <a href="?{% url_replace page=page_obj.next_page_number %}">{{ page_obj.next_page_number }}</a>
+    {% if page_obj.next_page_number != paginator.num_pages %}
+    <a href="?{% url_replace page=paginator.num_pages %}">{{ paginator.num_pages }}</a>
+    {% endif %}
+{% endif %}
+{% endblock content %}
+

@@ -1,0 +1,18 @@
+{% extends 'Ads/default.html' %}
+{% block title %}
+Editing Ad
+{% endblock title %}
+
+{% block content %}
+{% if ad.author == request.user %}
+<h1>Редактирование объявления:</h1>
+<form action="" method="post">
+    {% csrf_token %}
+    {{ form.media }}
+    {{ form.as_p }}
+    <input type="submit" value='Сохранить'>
+</form>
+{% else %}
+<h3>Только автор может редактировать свое объявление.</h3>
+{% endif %}
+{% endblock content %}
